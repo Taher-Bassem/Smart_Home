@@ -1,0 +1,713 @@
+
+Grad_Master.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0000043c  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         0000001c  00800060  0000043c  000004b0  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .stab         00000a20  00000000  00000000  000004cc  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  3 .stabstr      00000947  00000000  00000000  00000eec  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+   8:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+   c:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  10:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  14:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  18:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  1c:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  20:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  24:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  28:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  2c:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  30:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  34:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  38:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  3c:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  40:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  44:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  48:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  4c:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+  50:	0c 94 3f 00 	jmp	0x7e	; 0x7e <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+
+00000060 <__do_copy_data>:
+  60:	10 e0       	ldi	r17, 0x00	; 0
+  62:	a0 e6       	ldi	r26, 0x60	; 96
+  64:	b0 e0       	ldi	r27, 0x00	; 0
+  66:	ec e3       	ldi	r30, 0x3C	; 60
+  68:	f4 e0       	ldi	r31, 0x04	; 4
+  6a:	02 c0       	rjmp	.+4      	; 0x70 <.do_copy_data_start>
+
+0000006c <.do_copy_data_loop>:
+  6c:	05 90       	lpm	r0, Z+
+  6e:	0d 92       	st	X+, r0
+
+00000070 <.do_copy_data_start>:
+  70:	ac 37       	cpi	r26, 0x7C	; 124
+  72:	b1 07       	cpc	r27, r17
+  74:	d9 f7       	brne	.-10     	; 0x6c <.do_copy_data_loop>
+  76:	0e 94 41 00 	call	0x82	; 0x82 <main>
+  7a:	0c 94 1c 02 	jmp	0x438	; 0x438 <_exit>
+
+0000007e <__bad_interrupt>:
+  7e:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+00000082 <main>:
+
+#include "USART.h"
+
+		int main(void)
+
+		{
+  82:	df 93       	push	r29
+  84:	cf 93       	push	r28
+  86:	0f 92       	push	r0
+  88:	cd b7       	in	r28, 0x3d	; 61
+  8a:	de b7       	in	r29, 0x3e	; 62
+		#ifdef Grad_Master //Master SPI
+
+			char Input;			/* declaration of input */
+			DDRB = 0xff;
+  8c:	e7 e3       	ldi	r30, 0x37	; 55
+  8e:	f0 e0       	ldi	r31, 0x00	; 0
+  90:	8f ef       	ldi	r24, 0xFF	; 255
+  92:	80 83       	st	Z, r24
+			USART_Init(9600);	/* initialize USART with 9600 baud rate */
+  94:	60 e8       	ldi	r22, 0x80	; 128
+  96:	75 e2       	ldi	r23, 0x25	; 37
+  98:	80 e0       	ldi	r24, 0x00	; 0
+  9a:	90 e0       	ldi	r25, 0x00	; 0
+  9c:	0e 94 36 01 	call	0x26c	; 0x26c <USART_Init>
+			SPI_initMaster();	/* initialize SPI */
+  a0:	0e 94 6b 00 	call	0xd6	; 0xd6 <SPI_initMaster>
+
+				while(1)
+				{
+					Input = USART_RxChar(); 	/*recieving from the bluetooth*/
+  a4:	0e 94 a9 01 	call	0x352	; 0x352 <USART_RxChar>
+  a8:	89 83       	std	Y+1, r24	; 0x01
+
+					if (Input =='1')	/*if input is =1 send the byte that will turn led 1 on*/
+  aa:	89 81       	ldd	r24, Y+1	; 0x01
+  ac:	81 33       	cpi	r24, 0x31	; 49
+  ae:	41 f4       	brne	.+16     	; 0xc0 <main+0x3e>
+					{
+						USART_SendString("LED1_ON/OFF \n"); //sending to bluetooth device
+  b0:	80 e6       	ldi	r24, 0x60	; 96
+  b2:	90 e0       	ldi	r25, 0x00	; 0
+  b4:	0e 94 cf 01 	call	0x39e	; 0x39e <USART_SendString>
+						SPI_sendByte(0x01);	/*using led at port0 so sending 0b00000001*/
+  b8:	81 e0       	ldi	r24, 0x01	; 1
+  ba:	0e 94 a8 00 	call	0x150	; 0x150 <SPI_sendByte>
+  be:	f2 cf       	rjmp	.-28     	; 0xa4 <main+0x22>
+					}
+					else if (Input =='2')	/*if input is =1 send the byte that will turn led 1 on*/
+  c0:	89 81       	ldd	r24, Y+1	; 0x01
+  c2:	82 33       	cpi	r24, 0x32	; 50
+  c4:	79 f7       	brne	.-34     	; 0xa4 <main+0x22>
+					{
+						USART_SendString("LED2_ON/OFF \n"); ////sending to bluetooth device
+  c6:	8e e6       	ldi	r24, 0x6E	; 110
+  c8:	90 e0       	ldi	r25, 0x00	; 0
+  ca:	0e 94 cf 01 	call	0x39e	; 0x39e <USART_SendString>
+						SPI_sendByte(0x04);/*using led at port2 so sending 0b00000100*/
+  ce:	84 e0       	ldi	r24, 0x04	; 4
+  d0:	0e 94 a8 00 	call	0x150	; 0x150 <SPI_sendByte>
+  d4:	e7 cf       	rjmp	.-50     	; 0xa4 <main+0x22>
+
+000000d6 <SPI_initMaster>:
+// SPI (Serial  peripheral interface)
+
+#include "SPI.h" //include SPI header file
+
+void SPI_initMaster(void)
+{
+  d6:	df 93       	push	r29
+  d8:	cf 93       	push	r28
+  da:	cd b7       	in	r28, 0x3d	; 61
+  dc:	de b7       	in	r29, 0x3e	; 62
+	DDRB = ((1<<4) | (1<<5) | (1<<7)); /* SS(4), MOSI(5) ,SCK(7) are outputs */
+  de:	e7 e3       	ldi	r30, 0x37	; 55
+  e0:	f0 e0       	ldi	r31, 0x00	; 0
+  e2:	80 eb       	ldi	r24, 0xB0	; 176
+  e4:	80 83       	st	Z, r24
+	DDRB &= ~(1<<6); /* MISO(6) is input*/
+  e6:	a7 e3       	ldi	r26, 0x37	; 55
+  e8:	b0 e0       	ldi	r27, 0x00	; 0
+  ea:	e7 e3       	ldi	r30, 0x37	; 55
+  ec:	f0 e0       	ldi	r31, 0x00	; 0
+  ee:	80 81       	ld	r24, Z
+  f0:	8f 7b       	andi	r24, 0xBF	; 191
+  f2:	8c 93       	st	X, r24
+
+	SPCR = ((1<<6) | (1<<5) | (1<<4) | (1<<1) | (1<<0));
+  f4:	ed e2       	ldi	r30, 0x2D	; 45
+  f6:	f0 e0       	ldi	r31, 0x00	; 0
+  f8:	83 e7       	ldi	r24, 0x73	; 115
+  fa:	80 83       	st	Z, r24
+	SPSR |= (1<<0);
+  fc:	ae e2       	ldi	r26, 0x2E	; 46
+  fe:	b0 e0       	ldi	r27, 0x00	; 0
+ 100:	ee e2       	ldi	r30, 0x2E	; 46
+ 102:	f0 e0       	ldi	r31, 0x00	; 0
+ 104:	80 81       	ld	r24, Z
+ 106:	81 60       	ori	r24, 0x01	; 1
+ 108:	8c 93       	st	X, r24
+	/*SPI(6) enabled, dataorder(5) LSB,
+	 master selected(4),*/
+	/* SPCR bit (1)&(0) with SPSR bit (0) (Fosc/64)*/
+
+}
+ 10a:	cf 91       	pop	r28
+ 10c:	df 91       	pop	r29
+ 10e:	08 95       	ret
+
+00000110 <SPI_initSlave>:
+
+void SPI_initSlave(void)
+{
+ 110:	df 93       	push	r29
+ 112:	cf 93       	push	r28
+ 114:	cd b7       	in	r28, 0x3d	; 61
+ 116:	de b7       	in	r29, 0x3e	; 62
+	DDRB &= ~((1<<4) | (1<<5) | (1<<7));/* SS(4), MOSI(5) ,SCK(7) are inputs */
+ 118:	a7 e3       	ldi	r26, 0x37	; 55
+ 11a:	b0 e0       	ldi	r27, 0x00	; 0
+ 11c:	e7 e3       	ldi	r30, 0x37	; 55
+ 11e:	f0 e0       	ldi	r31, 0x00	; 0
+ 120:	80 81       	ld	r24, Z
+ 122:	8f 74       	andi	r24, 0x4F	; 79
+ 124:	8c 93       	st	X, r24
+	DDRB |= (1<<6); /* MISO(6) is output*/
+ 126:	a7 e3       	ldi	r26, 0x37	; 55
+ 128:	b0 e0       	ldi	r27, 0x00	; 0
+ 12a:	e7 e3       	ldi	r30, 0x37	; 55
+ 12c:	f0 e0       	ldi	r31, 0x00	; 0
+ 12e:	80 81       	ld	r24, Z
+ 130:	80 64       	ori	r24, 0x40	; 64
+ 132:	8c 93       	st	X, r24
+
+	SPCR = ((1<<6) | (1<<5) | (1<<1) | (1<<0));
+ 134:	ed e2       	ldi	r30, 0x2D	; 45
+ 136:	f0 e0       	ldi	r31, 0x00	; 0
+ 138:	83 e6       	ldi	r24, 0x63	; 99
+ 13a:	80 83       	st	Z, r24
+	SPSR |= (1<<0);
+ 13c:	ae e2       	ldi	r26, 0x2E	; 46
+ 13e:	b0 e0       	ldi	r27, 0x00	; 0
+ 140:	ee e2       	ldi	r30, 0x2E	; 46
+ 142:	f0 e0       	ldi	r31, 0x00	; 0
+ 144:	80 81       	ld	r24, Z
+ 146:	81 60       	ori	r24, 0x01	; 1
+ 148:	8c 93       	st	X, r24
+	/*SPI(6) enabled, dataorder(5) LSB*/
+	/* SPCR bit (1)&(0) with SPSR bit (0) (Fosc/64)*/
+}
+ 14a:	cf 91       	pop	r28
+ 14c:	df 91       	pop	r29
+ 14e:	08 95       	ret
+
+00000150 <SPI_sendByte>:
+
+void SPI_sendByte(const unsigned char data)
+{
+ 150:	df 93       	push	r29
+ 152:	cf 93       	push	r28
+ 154:	0f 92       	push	r0
+ 156:	cd b7       	in	r28, 0x3d	; 61
+ 158:	de b7       	in	r29, 0x3e	; 62
+ 15a:	89 83       	std	Y+1, r24	; 0x01
+	SPDR = data;  //SPDR = Data Register
+ 15c:	ef e2       	ldi	r30, 0x2F	; 47
+ 15e:	f0 e0       	ldi	r31, 0x00	; 0
+ 160:	89 81       	ldd	r24, Y+1	; 0x01
+ 162:	80 83       	st	Z, r24
+	while(!(SPSR & (1<<7))) //wait until Flag =1
+ 164:	ee e2       	ldi	r30, 0x2E	; 46
+ 166:	f0 e0       	ldi	r31, 0x00	; 0
+ 168:	80 81       	ld	r24, Z
+ 16a:	88 23       	and	r24, r24
+ 16c:	dc f7       	brge	.-10     	; 0x164 <SPI_sendByte+0x14>
+	{}
+}
+ 16e:	0f 90       	pop	r0
+ 170:	cf 91       	pop	r28
+ 172:	df 91       	pop	r29
+ 174:	08 95       	ret
+
+00000176 <SPI_receiveByte>:
+
+unsigned char SPI_receiveByte(void)
+{
+ 176:	df 93       	push	r29
+ 178:	cf 93       	push	r28
+ 17a:	cd b7       	in	r28, 0x3d	; 61
+ 17c:	de b7       	in	r29, 0x3e	; 62
+	while(!(SPSR & (1<<7))) //wait until Flag =1
+ 17e:	ee e2       	ldi	r30, 0x2E	; 46
+ 180:	f0 e0       	ldi	r31, 0x00	; 0
+ 182:	80 81       	ld	r24, Z
+ 184:	88 23       	and	r24, r24
+ 186:	dc f7       	brge	.-10     	; 0x17e <SPI_receiveByte+0x8>
+	{}
+	return SPDR; //SPDR = Data Register
+ 188:	ef e2       	ldi	r30, 0x2F	; 47
+ 18a:	f0 e0       	ldi	r31, 0x00	; 0
+ 18c:	80 81       	ld	r24, Z
+}
+ 18e:	cf 91       	pop	r28
+ 190:	df 91       	pop	r29
+ 192:	08 95       	ret
+
+00000194 <SPI_sendString>:
+
+void SPI_sendString(const unsigned char *Str)
+{
+ 194:	df 93       	push	r29
+ 196:	cf 93       	push	r28
+ 198:	00 d0       	rcall	.+0      	; 0x19a <SPI_sendString+0x6>
+ 19a:	0f 92       	push	r0
+ 19c:	cd b7       	in	r28, 0x3d	; 61
+ 19e:	de b7       	in	r29, 0x3e	; 62
+ 1a0:	9b 83       	std	Y+3, r25	; 0x03
+ 1a2:	8a 83       	std	Y+2, r24	; 0x02
+	unsigned char i = 0;
+ 1a4:	19 82       	std	Y+1, r1	; 0x01
+ 1a6:	0e c0       	rjmp	.+28     	; 0x1c4 <SPI_sendString+0x30>
+	while(Str[i] != '\0') //loop is true until null
+	{
+		SPI_sendByte(Str[i]);		/* Send each char of string till the NULL */
+ 1a8:	89 81       	ldd	r24, Y+1	; 0x01
+ 1aa:	28 2f       	mov	r18, r24
+ 1ac:	30 e0       	ldi	r19, 0x00	; 0
+ 1ae:	8a 81       	ldd	r24, Y+2	; 0x02
+ 1b0:	9b 81       	ldd	r25, Y+3	; 0x03
+ 1b2:	fc 01       	movw	r30, r24
+ 1b4:	e2 0f       	add	r30, r18
+ 1b6:	f3 1f       	adc	r31, r19
+ 1b8:	80 81       	ld	r24, Z
+ 1ba:	0e 94 a8 00 	call	0x150	; 0x150 <SPI_sendByte>
+		i++;						//increment i
+ 1be:	89 81       	ldd	r24, Y+1	; 0x01
+ 1c0:	8f 5f       	subi	r24, 0xFF	; 255
+ 1c2:	89 83       	std	Y+1, r24	; 0x01
+}
+
+void SPI_sendString(const unsigned char *Str)
+{
+	unsigned char i = 0;
+	while(Str[i] != '\0') //loop is true until null
+ 1c4:	89 81       	ldd	r24, Y+1	; 0x01
+ 1c6:	28 2f       	mov	r18, r24
+ 1c8:	30 e0       	ldi	r19, 0x00	; 0
+ 1ca:	8a 81       	ldd	r24, Y+2	; 0x02
+ 1cc:	9b 81       	ldd	r25, Y+3	; 0x03
+ 1ce:	fc 01       	movw	r30, r24
+ 1d0:	e2 0f       	add	r30, r18
+ 1d2:	f3 1f       	adc	r31, r19
+ 1d4:	80 81       	ld	r24, Z
+ 1d6:	88 23       	and	r24, r24
+ 1d8:	39 f7       	brne	.-50     	; 0x1a8 <SPI_sendString+0x14>
+	{
+		SPI_sendByte(Str[i]);		/* Send each char of string till the NULL */
+		i++;						//increment i
+	}
+}
+ 1da:	0f 90       	pop	r0
+ 1dc:	0f 90       	pop	r0
+ 1de:	0f 90       	pop	r0
+ 1e0:	cf 91       	pop	r28
+ 1e2:	df 91       	pop	r29
+ 1e4:	08 95       	ret
+
+000001e6 <SPI_receiveString>:
+
+void SPI_receiveString(unsigned char *Str)
+{
+ 1e6:	0f 93       	push	r16
+ 1e8:	1f 93       	push	r17
+ 1ea:	df 93       	push	r29
+ 1ec:	cf 93       	push	r28
+ 1ee:	00 d0       	rcall	.+0      	; 0x1f0 <SPI_receiveString+0xa>
+ 1f0:	0f 92       	push	r0
+ 1f2:	cd b7       	in	r28, 0x3d	; 61
+ 1f4:	de b7       	in	r29, 0x3e	; 62
+ 1f6:	9b 83       	std	Y+3, r25	; 0x03
+ 1f8:	8a 83       	std	Y+2, r24	; 0x02
+	unsigned char i = 0;
+ 1fa:	19 82       	std	Y+1, r1	; 0x01
+	Str[i] = SPI_receiveByte();//send first character
+ 1fc:	89 81       	ldd	r24, Y+1	; 0x01
+ 1fe:	28 2f       	mov	r18, r24
+ 200:	30 e0       	ldi	r19, 0x00	; 0
+ 202:	8a 81       	ldd	r24, Y+2	; 0x02
+ 204:	9b 81       	ldd	r25, Y+3	; 0x03
+ 206:	8c 01       	movw	r16, r24
+ 208:	02 0f       	add	r16, r18
+ 20a:	13 1f       	adc	r17, r19
+ 20c:	0e 94 bb 00 	call	0x176	; 0x176 <SPI_receiveByte>
+ 210:	f8 01       	movw	r30, r16
+ 212:	80 83       	st	Z, r24
+ 214:	0f c0       	rjmp	.+30     	; 0x234 <SPI_receiveString+0x4e>
+	while(Str[i] != '#') //loop is true until #
+	{
+		i++;
+ 216:	89 81       	ldd	r24, Y+1	; 0x01
+ 218:	8f 5f       	subi	r24, 0xFF	; 255
+ 21a:	89 83       	std	Y+1, r24	; 0x01
+		Str[i] = SPI_receiveByte();/* receive each char of string till the # */
+ 21c:	89 81       	ldd	r24, Y+1	; 0x01
+ 21e:	28 2f       	mov	r18, r24
+ 220:	30 e0       	ldi	r19, 0x00	; 0
+ 222:	8a 81       	ldd	r24, Y+2	; 0x02
+ 224:	9b 81       	ldd	r25, Y+3	; 0x03
+ 226:	8c 01       	movw	r16, r24
+ 228:	02 0f       	add	r16, r18
+ 22a:	13 1f       	adc	r17, r19
+ 22c:	0e 94 bb 00 	call	0x176	; 0x176 <SPI_receiveByte>
+ 230:	f8 01       	movw	r30, r16
+ 232:	80 83       	st	Z, r24
+
+void SPI_receiveString(unsigned char *Str)
+{
+	unsigned char i = 0;
+	Str[i] = SPI_receiveByte();//send first character
+	while(Str[i] != '#') //loop is true until #
+ 234:	89 81       	ldd	r24, Y+1	; 0x01
+ 236:	28 2f       	mov	r18, r24
+ 238:	30 e0       	ldi	r19, 0x00	; 0
+ 23a:	8a 81       	ldd	r24, Y+2	; 0x02
+ 23c:	9b 81       	ldd	r25, Y+3	; 0x03
+ 23e:	fc 01       	movw	r30, r24
+ 240:	e2 0f       	add	r30, r18
+ 242:	f3 1f       	adc	r31, r19
+ 244:	80 81       	ld	r24, Z
+ 246:	83 32       	cpi	r24, 0x23	; 35
+ 248:	31 f7       	brne	.-52     	; 0x216 <SPI_receiveString+0x30>
+	{
+		i++;
+		Str[i] = SPI_receiveByte();/* receive each char of string till the # */
+	}
+	Str[i] = '\0'; //changing the # to null
+ 24a:	89 81       	ldd	r24, Y+1	; 0x01
+ 24c:	28 2f       	mov	r18, r24
+ 24e:	30 e0       	ldi	r19, 0x00	; 0
+ 250:	8a 81       	ldd	r24, Y+2	; 0x02
+ 252:	9b 81       	ldd	r25, Y+3	; 0x03
+ 254:	fc 01       	movw	r30, r24
+ 256:	e2 0f       	add	r30, r18
+ 258:	f3 1f       	adc	r31, r19
+ 25a:	10 82       	st	Z, r1
+}
+ 25c:	0f 90       	pop	r0
+ 25e:	0f 90       	pop	r0
+ 260:	0f 90       	pop	r0
+ 262:	cf 91       	pop	r28
+ 264:	df 91       	pop	r29
+ 266:	1f 91       	pop	r17
+ 268:	0f 91       	pop	r16
+ 26a:	08 95       	ret
+
+0000026c <USART_Init>:
+ */
+
+#include "USART.h"						/* Include USART header file */
+
+void USART_Init(unsigned long BAUDRATE)				/* USART initialize function */
+{
+ 26c:	0f 93       	push	r16
+ 26e:	1f 93       	push	r17
+ 270:	df 93       	push	r29
+ 272:	cf 93       	push	r28
+ 274:	00 d0       	rcall	.+0      	; 0x276 <USART_Init+0xa>
+ 276:	00 d0       	rcall	.+0      	; 0x278 <USART_Init+0xc>
+ 278:	cd b7       	in	r28, 0x3d	; 61
+ 27a:	de b7       	in	r29, 0x3e	; 62
+ 27c:	69 83       	std	Y+1, r22	; 0x01
+ 27e:	7a 83       	std	Y+2, r23	; 0x02
+ 280:	8b 83       	std	Y+3, r24	; 0x03
+ 282:	9c 83       	std	Y+4, r25	; 0x04
+	UCSRB |= (1 << RXEN) | (1 << TXEN);				/* Enable USART transmitter and receiver */
+ 284:	aa e2       	ldi	r26, 0x2A	; 42
+ 286:	b0 e0       	ldi	r27, 0x00	; 0
+ 288:	ea e2       	ldi	r30, 0x2A	; 42
+ 28a:	f0 e0       	ldi	r31, 0x00	; 0
+ 28c:	80 81       	ld	r24, Z
+ 28e:	88 61       	ori	r24, 0x18	; 24
+ 290:	8c 93       	st	X, r24
+	UCSRC |= (1 << URSEL)| (1 << UCSZ0) | (1 << UCSZ1);/* Write USCRC for 8 bit data and 1 stop bit*/
+ 292:	a0 e4       	ldi	r26, 0x40	; 64
+ 294:	b0 e0       	ldi	r27, 0x00	; 0
+ 296:	e0 e4       	ldi	r30, 0x40	; 64
+ 298:	f0 e0       	ldi	r31, 0x00	; 0
+ 29a:	80 81       	ld	r24, Z
+ 29c:	86 68       	ori	r24, 0x86	; 134
+ 29e:	8c 93       	st	X, r24
+	UBRRL = BAUD_PRESCALE;						/* Load UBRRL with lower 8 bit of prescale value */
+ 2a0:	09 e2       	ldi	r16, 0x29	; 41
+ 2a2:	10 e0       	ldi	r17, 0x00	; 0
+ 2a4:	89 81       	ldd	r24, Y+1	; 0x01
+ 2a6:	9a 81       	ldd	r25, Y+2	; 0x02
+ 2a8:	ab 81       	ldd	r26, Y+3	; 0x03
+ 2aa:	bc 81       	ldd	r27, Y+4	; 0x04
+ 2ac:	88 0f       	add	r24, r24
+ 2ae:	99 1f       	adc	r25, r25
+ 2b0:	aa 1f       	adc	r26, r26
+ 2b2:	bb 1f       	adc	r27, r27
+ 2b4:	88 0f       	add	r24, r24
+ 2b6:	99 1f       	adc	r25, r25
+ 2b8:	aa 1f       	adc	r26, r26
+ 2ba:	bb 1f       	adc	r27, r27
+ 2bc:	88 0f       	add	r24, r24
+ 2be:	99 1f       	adc	r25, r25
+ 2c0:	aa 1f       	adc	r26, r26
+ 2c2:	bb 1f       	adc	r27, r27
+ 2c4:	88 0f       	add	r24, r24
+ 2c6:	99 1f       	adc	r25, r25
+ 2c8:	aa 1f       	adc	r26, r26
+ 2ca:	bb 1f       	adc	r27, r27
+ 2cc:	9c 01       	movw	r18, r24
+ 2ce:	ad 01       	movw	r20, r26
+ 2d0:	80 e0       	ldi	r24, 0x00	; 0
+ 2d2:	94 e2       	ldi	r25, 0x24	; 36
+ 2d4:	a4 ef       	ldi	r26, 0xF4	; 244
+ 2d6:	b0 e0       	ldi	r27, 0x00	; 0
+ 2d8:	bc 01       	movw	r22, r24
+ 2da:	cd 01       	movw	r24, r26
+ 2dc:	0e 94 fa 01 	call	0x3f4	; 0x3f4 <__udivmodsi4>
+ 2e0:	da 01       	movw	r26, r20
+ 2e2:	c9 01       	movw	r24, r18
+ 2e4:	81 50       	subi	r24, 0x01	; 1
+ 2e6:	f8 01       	movw	r30, r16
+ 2e8:	80 83       	st	Z, r24
+	UBRRH = (BAUD_PRESCALE >> 8);				/* Load UBRRH with upper 8 bit of prescale value */
+ 2ea:	00 e4       	ldi	r16, 0x40	; 64
+ 2ec:	10 e0       	ldi	r17, 0x00	; 0
+ 2ee:	89 81       	ldd	r24, Y+1	; 0x01
+ 2f0:	9a 81       	ldd	r25, Y+2	; 0x02
+ 2f2:	ab 81       	ldd	r26, Y+3	; 0x03
+ 2f4:	bc 81       	ldd	r27, Y+4	; 0x04
+ 2f6:	88 0f       	add	r24, r24
+ 2f8:	99 1f       	adc	r25, r25
+ 2fa:	aa 1f       	adc	r26, r26
+ 2fc:	bb 1f       	adc	r27, r27
+ 2fe:	88 0f       	add	r24, r24
+ 300:	99 1f       	adc	r25, r25
+ 302:	aa 1f       	adc	r26, r26
+ 304:	bb 1f       	adc	r27, r27
+ 306:	88 0f       	add	r24, r24
+ 308:	99 1f       	adc	r25, r25
+ 30a:	aa 1f       	adc	r26, r26
+ 30c:	bb 1f       	adc	r27, r27
+ 30e:	88 0f       	add	r24, r24
+ 310:	99 1f       	adc	r25, r25
+ 312:	aa 1f       	adc	r26, r26
+ 314:	bb 1f       	adc	r27, r27
+ 316:	9c 01       	movw	r18, r24
+ 318:	ad 01       	movw	r20, r26
+ 31a:	80 e0       	ldi	r24, 0x00	; 0
+ 31c:	94 e2       	ldi	r25, 0x24	; 36
+ 31e:	a4 ef       	ldi	r26, 0xF4	; 244
+ 320:	b0 e0       	ldi	r27, 0x00	; 0
+ 322:	bc 01       	movw	r22, r24
+ 324:	cd 01       	movw	r24, r26
+ 326:	0e 94 fa 01 	call	0x3f4	; 0x3f4 <__udivmodsi4>
+ 32a:	da 01       	movw	r26, r20
+ 32c:	c9 01       	movw	r24, r18
+ 32e:	01 97       	sbiw	r24, 0x01	; 1
+ 330:	a1 09       	sbc	r26, r1
+ 332:	b1 09       	sbc	r27, r1
+ 334:	89 2f       	mov	r24, r25
+ 336:	9a 2f       	mov	r25, r26
+ 338:	ab 2f       	mov	r26, r27
+ 33a:	bb 27       	eor	r27, r27
+ 33c:	f8 01       	movw	r30, r16
+ 33e:	80 83       	st	Z, r24
+}
+ 340:	0f 90       	pop	r0
+ 342:	0f 90       	pop	r0
+ 344:	0f 90       	pop	r0
+ 346:	0f 90       	pop	r0
+ 348:	cf 91       	pop	r28
+ 34a:	df 91       	pop	r29
+ 34c:	1f 91       	pop	r17
+ 34e:	0f 91       	pop	r16
+ 350:	08 95       	ret
+
+00000352 <USART_RxChar>:
+
+char USART_RxChar()
+{
+ 352:	df 93       	push	r29
+ 354:	cf 93       	push	r28
+ 356:	cd b7       	in	r28, 0x3d	; 61
+ 358:	de b7       	in	r29, 0x3e	; 62
+	while (!(UCSRA & (1 << RXC)));					/* Wait until new data receive */
+ 35a:	eb e2       	ldi	r30, 0x2B	; 43
+ 35c:	f0 e0       	ldi	r31, 0x00	; 0
+ 35e:	80 81       	ld	r24, Z
+ 360:	88 23       	and	r24, r24
+ 362:	dc f7       	brge	.-10     	; 0x35a <USART_RxChar+0x8>
+	return(UDR);									/* Get and return received data */
+ 364:	ec e2       	ldi	r30, 0x2C	; 44
+ 366:	f0 e0       	ldi	r31, 0x00	; 0
+ 368:	80 81       	ld	r24, Z
+}
+ 36a:	cf 91       	pop	r28
+ 36c:	df 91       	pop	r29
+ 36e:	08 95       	ret
+
+00000370 <USART_TxChar>:
+
+void USART_TxChar(char data)
+{
+ 370:	df 93       	push	r29
+ 372:	cf 93       	push	r28
+ 374:	0f 92       	push	r0
+ 376:	cd b7       	in	r28, 0x3d	; 61
+ 378:	de b7       	in	r29, 0x3e	; 62
+ 37a:	89 83       	std	Y+1, r24	; 0x01
+	UDR = data;										/* Write data to be transmitting in UDR */
+ 37c:	ec e2       	ldi	r30, 0x2C	; 44
+ 37e:	f0 e0       	ldi	r31, 0x00	; 0
+ 380:	89 81       	ldd	r24, Y+1	; 0x01
+ 382:	80 83       	st	Z, r24
+	while (!(UCSRA & (1<<UDRE)));				/* Wait until data transmit and buffer get empty */
+ 384:	eb e2       	ldi	r30, 0x2B	; 43
+ 386:	f0 e0       	ldi	r31, 0x00	; 0
+ 388:	80 81       	ld	r24, Z
+ 38a:	88 2f       	mov	r24, r24
+ 38c:	90 e0       	ldi	r25, 0x00	; 0
+ 38e:	80 72       	andi	r24, 0x20	; 32
+ 390:	90 70       	andi	r25, 0x00	; 0
+ 392:	00 97       	sbiw	r24, 0x00	; 0
+ 394:	b9 f3       	breq	.-18     	; 0x384 <USART_TxChar+0x14>
+}
+ 396:	0f 90       	pop	r0
+ 398:	cf 91       	pop	r28
+ 39a:	df 91       	pop	r29
+ 39c:	08 95       	ret
+
+0000039e <USART_SendString>:
+
+void USART_SendString(char *str)					/* Send string of USART data function */
+{
+ 39e:	df 93       	push	r29
+ 3a0:	cf 93       	push	r28
+ 3a2:	00 d0       	rcall	.+0      	; 0x3a4 <USART_SendString+0x6>
+ 3a4:	00 d0       	rcall	.+0      	; 0x3a6 <USART_SendString+0x8>
+ 3a6:	cd b7       	in	r28, 0x3d	; 61
+ 3a8:	de b7       	in	r29, 0x3e	; 62
+ 3aa:	9c 83       	std	Y+4, r25	; 0x04
+ 3ac:	8b 83       	std	Y+3, r24	; 0x03
+	int i=0;
+ 3ae:	1a 82       	std	Y+2, r1	; 0x02
+ 3b0:	19 82       	std	Y+1, r1	; 0x01
+ 3b2:	0f c0       	rjmp	.+30     	; 0x3d2 <USART_SendString+0x34>
+	while (str[i]!=0)
+	{
+		USART_TxChar(str[i]);						/* Send each char of string till the NULL */
+ 3b4:	29 81       	ldd	r18, Y+1	; 0x01
+ 3b6:	3a 81       	ldd	r19, Y+2	; 0x02
+ 3b8:	8b 81       	ldd	r24, Y+3	; 0x03
+ 3ba:	9c 81       	ldd	r25, Y+4	; 0x04
+ 3bc:	fc 01       	movw	r30, r24
+ 3be:	e2 0f       	add	r30, r18
+ 3c0:	f3 1f       	adc	r31, r19
+ 3c2:	80 81       	ld	r24, Z
+ 3c4:	0e 94 b8 01 	call	0x370	; 0x370 <USART_TxChar>
+		i++;
+ 3c8:	89 81       	ldd	r24, Y+1	; 0x01
+ 3ca:	9a 81       	ldd	r25, Y+2	; 0x02
+ 3cc:	01 96       	adiw	r24, 0x01	; 1
+ 3ce:	9a 83       	std	Y+2, r25	; 0x02
+ 3d0:	89 83       	std	Y+1, r24	; 0x01
+}
+
+void USART_SendString(char *str)					/* Send string of USART data function */
+{
+	int i=0;
+	while (str[i]!=0)
+ 3d2:	29 81       	ldd	r18, Y+1	; 0x01
+ 3d4:	3a 81       	ldd	r19, Y+2	; 0x02
+ 3d6:	8b 81       	ldd	r24, Y+3	; 0x03
+ 3d8:	9c 81       	ldd	r25, Y+4	; 0x04
+ 3da:	fc 01       	movw	r30, r24
+ 3dc:	e2 0f       	add	r30, r18
+ 3de:	f3 1f       	adc	r31, r19
+ 3e0:	80 81       	ld	r24, Z
+ 3e2:	88 23       	and	r24, r24
+ 3e4:	39 f7       	brne	.-50     	; 0x3b4 <USART_SendString+0x16>
+	{
+		USART_TxChar(str[i]);						/* Send each char of string till the NULL */
+		i++;
+	}
+}
+ 3e6:	0f 90       	pop	r0
+ 3e8:	0f 90       	pop	r0
+ 3ea:	0f 90       	pop	r0
+ 3ec:	0f 90       	pop	r0
+ 3ee:	cf 91       	pop	r28
+ 3f0:	df 91       	pop	r29
+ 3f2:	08 95       	ret
+
+000003f4 <__udivmodsi4>:
+ 3f4:	a1 e2       	ldi	r26, 0x21	; 33
+ 3f6:	1a 2e       	mov	r1, r26
+ 3f8:	aa 1b       	sub	r26, r26
+ 3fa:	bb 1b       	sub	r27, r27
+ 3fc:	fd 01       	movw	r30, r26
+ 3fe:	0d c0       	rjmp	.+26     	; 0x41a <__udivmodsi4_ep>
+
+00000400 <__udivmodsi4_loop>:
+ 400:	aa 1f       	adc	r26, r26
+ 402:	bb 1f       	adc	r27, r27
+ 404:	ee 1f       	adc	r30, r30
+ 406:	ff 1f       	adc	r31, r31
+ 408:	a2 17       	cp	r26, r18
+ 40a:	b3 07       	cpc	r27, r19
+ 40c:	e4 07       	cpc	r30, r20
+ 40e:	f5 07       	cpc	r31, r21
+ 410:	20 f0       	brcs	.+8      	; 0x41a <__udivmodsi4_ep>
+ 412:	a2 1b       	sub	r26, r18
+ 414:	b3 0b       	sbc	r27, r19
+ 416:	e4 0b       	sbc	r30, r20
+ 418:	f5 0b       	sbc	r31, r21
+
+0000041a <__udivmodsi4_ep>:
+ 41a:	66 1f       	adc	r22, r22
+ 41c:	77 1f       	adc	r23, r23
+ 41e:	88 1f       	adc	r24, r24
+ 420:	99 1f       	adc	r25, r25
+ 422:	1a 94       	dec	r1
+ 424:	69 f7       	brne	.-38     	; 0x400 <__udivmodsi4_loop>
+ 426:	60 95       	com	r22
+ 428:	70 95       	com	r23
+ 42a:	80 95       	com	r24
+ 42c:	90 95       	com	r25
+ 42e:	9b 01       	movw	r18, r22
+ 430:	ac 01       	movw	r20, r24
+ 432:	bd 01       	movw	r22, r26
+ 434:	cf 01       	movw	r24, r30
+ 436:	08 95       	ret
+
+00000438 <_exit>:
+ 438:	f8 94       	cli
+
+0000043a <__stop_program>:
+ 43a:	ff cf       	rjmp	.-2      	; 0x43a <__stop_program>
